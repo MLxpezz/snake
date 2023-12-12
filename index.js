@@ -15,6 +15,7 @@ class Game {
   isLost = false;
   food = null;
   snake = null;
+  director = null;
 
   constructor() {
     this.canvas = document.querySelector("canvas");
@@ -27,18 +28,20 @@ class Game {
   }
 
   init() {
-    this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
-    this.snake.draw();
-    this.logic();
-    requestAnimationFrame(this.init);
+      this.director = setInterval(() => {
+        this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+        this.snake.draw();
+        this.logic();
+      }, 100);
   }
 
   logic() {
-    this.movement();
     this.createFood();
+    this.movement();
     this.detectColission();
+
   }
 
   movement() {
@@ -48,19 +51,24 @@ class Game {
   }
 
   createFood() {
-    if (this.food === null) {
-      const randomX = Math.floor(
-        Math.random() * this.CANVAS_WIDTH - this.SQUARE_SIZE
-      );
-      const randomY = Math.floor(
-        Math.random() * this.CANVAS_HEIGHT - this.SQUARE_SIZE
-      );
+      if(!this.food) {
+        const randomX = Math.floor(
+          Math.random() * 400
+        );
+        const randomY = Math.floor(
+          Math.random() * 400
+        );
+  
+        this.food = { x: randomX, y: randomY };
+      }
 
-      this.food = { x: randomX, y: randomY };
-    }
-
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(this.food.x, this.food.y, this.SQUARE_SIZE, this.SQUARE_SIZE);
+      this.ctx.fillStyle = "red";
+      this.ctx.fillRect(
+        this.food.x,
+        this.food.y,
+        this.SQUARE_SIZE,
+        this.SQUARE_SIZE
+      );
   }
 
   detectColission() {
@@ -72,56 +80,18 @@ class Game {
     ) {
       this.food = null;
       this.snake.addTail();
+    } if (this.snake.positionY < 0 || this.snake.positionX >= this.CANVAS_WIDTH || this.snake.positionY >= this.CANVAS_HEIGHT || this.snake.positionX + this.SQUARE_SIZE <= 0) {
+      clearInterval(this.director);
+    }
+
+    for(let i = 0; i < this.snake.snake.length; i++) {
+      for(let j = 1; j < this.snake.snake.length - 1; j++) {
+        if(this.snake.snake[i] === this.snake.snake[j]) {
+          clearInterval(this.director);
+        }
+      }
     }
   }
 }
 
 new Game();
-
-// const canvas = document.querySelector("canvas");
-// canvas.width = 500;
-// canvas.height = 500;
-// const ctx = canvas.getContext("2d");
-// ctx.fillStyle = "black";
-// ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-// let food = null;
-
-// const snake = new Snake(ctx);
-// const direction = {
-//   d: "right",
-//   a: "left",
-//   w: "up",
-//   s: "down",
-// };
-
-// document.addEventListener("keypress", (e) => {
-//   snake.snakeDirection(direction[e.key]);
-// });
-
-// const init = () => {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   ctx.fillStyle = "black";
-//   ctx.fillRect(0, 0, canvas.width, canvas.height);
-//   snake.draw();
-//   if (!food) {
-//     createFood();
-//   }
-//   if(snake.positionX < food.x+10 && snake.positionX+10 > food.x &&
-//     snake.positionY < food.y+10 && snake.positionY+10 > food.y) {
-//     createFood();
-//   }
-//   ctx.fillStyle = "red";
-//   ctx.fillRect(food.x, food.y, 10, 10);
-
-//   requestAnimationFrame(init);
-// };
-
-// const createFood = () => {
-//   const randomX = Math.floor(Math.random() * canvas.width-10);
-//   const randomY = Math.floor(Math.random() * canvas.height-10);
-
-//   food = { x: randomX, y: randomY };
-// };
-
-// init();

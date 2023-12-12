@@ -5,11 +5,9 @@ class Snake {
   head = {};
   tail = {};
   direction = null;
-  velocity = 2;
+  velocity = 25;
   positionX = null;
   positionY = null;
-  old_positionX = null;
-  old_positionY = null;
   ctx = null;
 
   constructor(ctx) {
@@ -25,34 +23,28 @@ class Snake {
     this.head.x = this.positionX;
     this.head.y = this.positionY;
 
-    this.snake.map((square, index, snake_) => {
-        if(index === 0) {
-          this.ctx.fillRect(square.x, square.y, this.SNAKE_SIZE, this.SNAKE_SIZE);
-        } else {
-          this.ctx.fillRect(snake_[index].x, snake_[index].y, this.SNAKE_SIZE, this.SNAKE_SIZE);
-        }
+    this.snake.forEach((square, index) => {
+      if (index === 0) {
+        this.ctx.fillRect(square.x, square.y, this.SNAKE_SIZE, this.SNAKE_SIZE);
+      } else {
+        this.ctx.fillRect(square.x, square.y, this.SNAKE_SIZE, this.SNAKE_SIZE);
+      }
     });
-
-    
 
     this.snakeMovement();
     this.tailMovement();
   }
 
   addTail() {
-    this.old_positionX = this.positionX;
-    this.old_positionY = this.positionY;
-    this.tail = { x: this.old_positionX, y: this.old_positionY };
+    this.tail = { x: this.head.x, y: this.head.y };
     this.snake.push(this.tail);
   }
 
   tailMovement() {
-    this.snake.map((square, index) => {
-      if(index !== 0) {
-        square.x = this.head.x - this.SNAKE_SIZE;
-        square.y = this.head.y - this.SNAKE_SIZE;
-      }
-    })
+    for (let i = this.snake.length - 1; i > 0; i--) {
+      this.snake[i].x = this.snake[i - 1].x;
+      this.snake[i].y = this.snake[i - 1].y;
+    }
   }
 
   snakeDirection(direction) {
