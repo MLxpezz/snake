@@ -1,11 +1,11 @@
 class Snake {
-  SNAKE_SIZE = 20;
+  SNAKE_SIZE = 30;
 
   snake = [];
   head = {};
   tail = {};
   direction = null;
-  velocity = 25;
+  velocity = 30;
   positionX = null;
   positionY = null;
   ctx = null;
@@ -19,13 +19,14 @@ class Snake {
   }
 
   draw() {
-    this.ctx.fillStyle = "#ccc";
+
+    this.ctx.fillStyle = "#010626";
     this.head.x = this.positionX;
     this.head.y = this.positionY;
-
-    this.snake.forEach((square, index) => {
+    
+    this.snake.forEach((square, index, snake_) => {
       if (index === 0) {
-        this.ctx.fillRect(square.x, square.y, this.SNAKE_SIZE, this.SNAKE_SIZE);
+        this.ctx.fillRect(this.positionX, this.positionY, this.SNAKE_SIZE, this.SNAKE_SIZE);
       } else {
         this.ctx.fillRect(square.x, square.y, this.SNAKE_SIZE, this.SNAKE_SIZE);
       }
@@ -36,8 +37,8 @@ class Snake {
   }
 
   addTail() {
-    this.tail = { x: this.head.x, y: this.head.y };
-    this.snake.push(this.tail);
+    const newTail = { x: this.tail.x, y: this.tail.y };
+    this.snake.push(newTail);
   }
 
   tailMovement() {
