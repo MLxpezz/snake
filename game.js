@@ -16,6 +16,7 @@ class Game {
   food = null;
   snake = null;
   director = null;
+  score = 0;
 
   constructor() {
     this.canvas = document.querySelector("canvas");
@@ -41,6 +42,7 @@ class Game {
     this.createFood();
     this.movement();
     this.detectColission();
+    this.drawScore();
   }
 
   movement() {
@@ -76,14 +78,16 @@ class Game {
     ) {
       this.food = null;
       this.snake.addTail();
+      this.score++;
     }//checar si la serpiente sale de la pantalla
     if (
-      this.snake.positionY < 0 ||
+      this.snake.positionY + this.SQUARE_SIZE <= 0 ||
       this.snake.positionX >= this.CANVAS_WIDTH ||
       this.snake.positionY >= this.CANVAS_HEIGHT ||
       this.snake.positionX + this.SQUARE_SIZE <= 0
     ) {
       clearInterval(this.director);
+      this.gameOver();
     }
 
     //checar si la cabeza de la serpiente choca con su cuerpo
@@ -93,7 +97,17 @@ class Game {
         this.snake.positionY === this.snake.snake[i].y
       ) {
         clearInterval(this.director);
+        this.gameOver();
       }
     }
+  }
+
+  drawScore() {
+    document.querySelector('.score').textContent = `Score: ${this.score}`;
+  }
+
+  gameOver() {
+    document.querySelector('.modal').style.display = 'flex';
+    document.querySelector('.scoreShow').textContent = `Puntaje: ${this.score}`;
   }
 };
